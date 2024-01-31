@@ -1,42 +1,79 @@
 const { response, request } = require("express")
+const User = require("../models/user")
+const bcryptjs = require("bcryptjs")
 
+const getUser = async(req = request, res = response) => {
 
-const getUser = (req = request, res = response) => {
-    const { q, nombre, apellido, page = '1' } = req.query
+    const { limite = 5, from = 0 } = req.query
+    const query = { status: true }
+
+    // const users = await User.find(query)
+    //     .skip(Number(from))
+    //     .limit(Number(limite))
+
+    // const count = await User.countDocuments(query)   
+    
+    const [ count, users ] = await Promise.all([
+        User.countDocuments(query),
+        User.find(query)
+        .skip(Number(from))
+        .limit(Number(limite))
+    ])
 
     res.json({
-        ok: true,
-        q,
-        nombre,
-        apellido,
-        page
+        count,
+        users
+        // count,
+        // users   
     })
 }
 
-const putUser = (req, res = response) => {
+const postUser = async(req, res = response) => {
+
+    const { name, email, password, role } = req.body;
+    const user = new User({ name, email, password, role})
+
+    const salt = bcryptjs.genSaltSync();
+    user.password = bcryptjs.hashSync( password, salt );
+
+    await user.save()
+
     res.json({
         ok: true,
-        msg: "put API - controller"
+        user,
     })
 }
 
-const postUser = (req, res = response) => {
-    const id = req.params.id
-    const { nombre, edad } = req.body
+const deleteUser = async(req, res = response) => {
+
+    const { id } = req.params
+
+    // Borrado fisico
+    // const user = await User.findByIdAndDelete( id )
+
+    const user = await User.findByIdAndUpdate( id, { status: false } )
+
     res.json({
-        ok: true,
-        nombre,
-        edad,
-        id
+        user
     })
 }
 
-const deleteUser = (req, res = response) => {
+const putUser = async (req, res = response) => {
+    const { id } = req.params
+    const { _id, password, google, email, ...all } = req.body
+
+    if( password ){
+        const salt = bcryptjs.genSaltSync();
+        all.password = bcryptjs.hashSync( password, salt );
+    }
+
+    const user = await User.findByIdAndUpdate( id, all )
+
     res.json({
         ok: true,
-        msg: "delete API - controller"
+        user,
     })
-}
+}    
 
 module.exports = {
     getUser,
