@@ -35,7 +35,8 @@ const UserSchema = Schema({
 
 // Para remover datos que no se desea ver en el payload
 UserSchema.methods.toJSON = function(){
-    const { __v, password, ...user } = this.toObject()
+    const { __v, password, _id, ...user } = this.toObject()
+    user.uid = _id
     return user
 }
 
