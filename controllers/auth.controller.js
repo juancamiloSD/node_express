@@ -77,7 +77,6 @@ const googleAuth = async(req, res = response) => {
         const token = await generateJWT( user.id )
 
         res.json({
-            msg: "ok",
             user,
             token
         })
