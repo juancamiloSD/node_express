@@ -20,7 +20,7 @@ const getUser = async(req = request, res = response) => {
         .limit(Number(limite))
     ])
 
-    res.json({
+    return res.json({
         count,
         users
         // count,
@@ -38,7 +38,7 @@ const postUser = async(req, res = response) => {
 
     await user.save()
 
-    res.json({
+    return res.status(200).json({
         ok: true,
         user,
     })
@@ -54,7 +54,7 @@ const deleteUser = async(req, res = response) => {
     const user = await User.findByIdAndUpdate( id, { status: false } )
     const userAuth = req.userAuth
 
-    res.json({
+    return res.json({
         user,
         userAuth
     })
@@ -71,7 +71,7 @@ const putUser = async (req, res = response) => {
 
     const user = await User.findByIdAndUpdate( id, all )
 
-    res.json({
+    return res.json({
         ok: true,
         user,
     })
