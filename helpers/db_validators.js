@@ -39,10 +39,19 @@ const isProduct = async( id = "") => {
     }
 }
 
+const isCollectionValid = async(collection = "", collections = []) => {
+    const includes = collections.includes(collection);
+    if( !includes ){
+        throw new Error(`La colección ${collection} no es válida, ${collections}`)
+    }
+    return true;
+}   
+
 module.exports = {
     isRoleValid,
     isEmail,
     isUserId,
     isCategory,
-    isProduct
+    isProduct,
+    isCollectionValid
 }

@@ -24,6 +24,9 @@ const ProductSchema = Schema({
         type: Boolean,
         default: true
     },
+    img: {
+        type: String,
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
@@ -33,7 +36,7 @@ const ProductSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: "Category",
         require: true
-    }
+    },
  })
 
  ProductSchema.methods.toJSON = function(){
